@@ -1,0 +1,85 @@
+{
+  "project_name": "cross-region-s3-migration",
+  "last_run": "YYYY-MM-DDTHH:MM:SS.ssssss",
+  "regions": {
+    "source_region": "us-west-1",
+    "target_region": "us-east-1"
+  },
+  "resources": {
+    "iam": {
+      "role_name": "s3-to-s3-role",
+      "role_arn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/s3-to-s3-role",
+      "policies_attached": [
+        "AmazonS3FullAccess",
+        "AmazonSQSFullAccess",
+        "AWSGlueConsoleFullAccess",
+        "CloudWatchLogsFullAccess"
+      ]
+    },
+    "s3": {
+      "source_bucket": {
+        "name": "s3-migration-source-YOUR_ACCOUNT_ID-us-west-1",
+        "region": "us-west-1",
+        "versioning_enabled": true,
+        "encryption_enabled": true
+      },
+      "target_bucket": {
+        "name": "s3-migration-target-YOUR_ACCOUNT_ID-us-east-1",
+        "region": "us-east-1",
+        "versioning_enabled": true,
+        "encryption_enabled": true
+      }
+    },
+    "sns": {
+      "topic_name": "s3-to-s3-sns-topic-TIMESTAMP",
+      "topic_arn": "arn:aws:sns:us-west-1:YOUR_ACCOUNT_ID:s3-to-s3-sns-topic-TIMESTAMP",
+      "region": "us-west-1"
+    },
+    "sqs": {
+      "queue_name": "s3-to-s3-sqs-lambda-queue-TIMESTAMP",
+      "queue_url": "https://sqs.us-east-1.amazonaws.com/YOUR_ACCOUNT_ID/s3-to-s3-sqs-lambda-queue-TIMESTAMP",
+      "queue_arn": "arn:aws:sqs:us-east-1:YOUR_ACCOUNT_ID:s3-to-s3-sqs-lambda-queue-TIMESTAMP",
+      "region": "us-east-1",
+      "subscribed_to_sns": true
+    },
+    "lambda": {
+      "function_name": "s3-to-s3-migration-function",
+      "function_arn": "arn:aws:lambda:us-east-1:YOUR_ACCOUNT_ID:function:s3-to-s3-migration-function",
+      "runtime": "python3.9",
+      "region": "us-east-1",
+      "role_arn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/s3-to-s3-role",
+      "event_source_mapping": "event-source-mapping-uuid",
+      "connected_to_sqs": true
+    },
+    "glue": {
+      "database_name": "s3_migration_catalog_TIMESTAMP",
+      "crawler_name": "s3-migration-crawler-TIMESTAMP",
+      "classifier_name": "csv-classifier-TIMESTAMP",
+      "table_name": "customers",
+      "region": "us-east-1"
+    },
+    "athena": {
+      "database_name": "s3_migration_catalog_TIMESTAMP",
+      "results_bucket": "aws-athena-query-results-YOUR_ACCOUNT_ID-us-east-1",
+      "region": "us-east-1"
+    }
+  },
+  "deployment_status": {
+    "iam_role": "created",
+    "s3_buckets": "created",
+    "sns_topic": "created",
+    "sqs_queue": "created",
+    "lambda_function": "created",
+    "glue_resources": "created",
+    "athena_setup": "created"
+  },
+  "deletion_status": {
+    "s3_buckets": "not_deleted",
+    "lambda_function": "not_deleted",
+    "sqs_queue": "not_deleted",
+    "sns_topic": "not_deleted",
+    "glue_resources": "not_deleted",
+    "iam_role": "not_deleted",
+    "local_files": "not_deleted"
+  }
+}
