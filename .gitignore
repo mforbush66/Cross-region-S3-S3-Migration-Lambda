@@ -3,6 +3,9 @@
 config.json
 run_data.json
 
+# Documentation directory
+docs/
+
 # AWS Lambda deployment package
 lambda_function.zip
 
